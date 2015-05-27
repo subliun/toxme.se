@@ -47,6 +47,6 @@ class QRImage(qrcode.image.svg.SvgPathFillImage):
 
     @classmethod
     def get(cls, address):
-        text = "".join(("tox://", address)).lower()
+        text = "".join(("tox:", address)).lower()
         return cls.YUU_CACHE.get(text, cls._generate(text))
         
