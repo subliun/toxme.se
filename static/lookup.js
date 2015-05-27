@@ -22,7 +22,7 @@ function sc_errorStringFromCode(ec) {
 
 function sc_showResultOnUI(payload) {
     "use strict";
-    var message, source, sigbox;
+    var message, source, sigbox, sname;
     document.getElementById("lookup_error").style.display = "none";
     message = document.getElementById("lookup_results");
     message.style.display = "block";
@@ -43,10 +43,11 @@ function sc_showResultOnUI(payload) {
         document.getElementById("lu_user_id").textContent = payload.public_key;
     }
     sigbox = document.getElementById("lu_user_sig");
+    sname = encodeURIComponent(payload.name);
     sigbox.textContent = payload.verify.detail;
     sigbox.className = payload.verify.status === 1 ? "good"
                        : (payload.verify.status === 2 ? "bad" : "undecided");
-    document.getElementById("lu_user_link").href = "/u/" + payload.name;
+    document.getElementById("lu_user_link").href = "/u/" + sname;
 }
 
 function sc_lookupStatusDidChange(sender) {
