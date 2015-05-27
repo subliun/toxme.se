@@ -33,7 +33,7 @@
             {% end %}
         </div>
         <div class="chunk barcode">
-            <img src="/barcode/{{ record.name }}.svg">
+            <img src="/barcode/{{ url_escape(record.name) }}.svg">
             <p>
                 <small class="de-emphasize">(If you have a phone, you can scan this QR code to add {{ record.name }} instead.)</small>
             </p>
