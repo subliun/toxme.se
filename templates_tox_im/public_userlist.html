@@ -32,7 +32,7 @@
                 <p class="quote_tail"></p>
                 
                 <span class="username">
-                    <a href="/u/{{ record.name }}"><b>{{ record.name }}</b></a><span class="de-emphasize">@{{ realm }}</span>
+                    <a href="/u/{{ url_escape(record.name) }}"><b>{{ record.name }}</b></a><span class="de-emphasize">@{{ realm }}</span>
                 </span>
             </div>
             {% end %}
