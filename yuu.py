@@ -521,7 +521,7 @@ class CreateQR(tornado.web.RequestHandler):
 
         self.set_header("Cache-Control", "public; max-age=86400")
         self.set_header("Content-Type", "image/svg+xml; charset=utf-8")
-        self.write(barcode.QRImage.get("@".join((name, self.settings["home"]))))
+        self.write(barcode.QRImage.get(self.settings["local_store"].get(name).tox_id()))
         return
 
 class LookupAndOpenUser(tornado.web.RequestHandler):
