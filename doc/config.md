@@ -70,11 +70,6 @@ Number of processes to use.
 
 Makes ToxMe respond to DNS requests.
 
-###TinyDNS root
-```"djbdns_root": "/etc/tinydns/root"```
-
-Path to copy of TinyDNS to use. (hooks requirement)
-
 ###DNS authority names
 ```
 "dns_authority_names": [

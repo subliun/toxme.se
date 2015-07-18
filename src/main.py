@@ -32,10 +32,9 @@ import error_codes
 import barcode
 import dns_discovery
 import dns_serve
-import hooks
 
 tornado.log.enable_pretty_logging()
-LOGGER = logging.getLogger("yuu")
+LOGGER = logging.getLogger("toxme")
 
 ACTION_PUBLISH   = 1
 ACTION_UNPUBLISH = 2
@@ -230,9 +229,6 @@ class APIHandler(tornado.web.RequestHandler):
                 self.set_status(400)
                 self.json_payload(error_codes.ERROR_DUPE_ID)
                 return 0
-            if hooks:
-                hooks.did_update_record(self.settings["hooks_state"],
-                                        database.StaleUser(mus))
             session.close()
         return 1
 
@@ -333,8 +329,6 @@ class APIReleaseName(APIHandler):
         old = database.StaleUser(rec)
         self.settings["local_store"].delete_pk(pk)
         self.json_payload(error_codes.ERROR_OK)
-        if hooks:
-            hooks.did_delete_record(self.settings["hooks_state"], old)
         return
 
 class APILookupID(tornado.web.RequestHandler):
@@ -762,10 +756,6 @@ def main():
     local_store = database.Database(cfg["database_url"])
     lookup_core = dns_discovery.DNSCore(cfg["number_of_workers"])
     lookup_core.callback_dispatcher = lambda cb, r: ioloop.add_callback(cb, r)
-    if hooks:
-        hooks_state = hooks.init(cfg, local_store)
-    else:
-        hooks_state = None
 
     # an interesting object structure
     if cfg["sandbox"] == 0:
@@ -798,7 +788,7 @@ def main():
         local_store=local_store,
         lookup_core=lookup_core,
         address_ctr=address_ctr,
-        hooks_state=hooks_state,
+        hooks_state=None,
         app_startup=int(time.time()),
         home=cfg["registration_domain"],
     )
