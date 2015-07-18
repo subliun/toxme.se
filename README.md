@@ -42,6 +42,18 @@ Note: we use Ubuntu 14.04
 
 ```pip install -r misc/requirements.txt```
 
+### Optional:
+#### postgres support:
+#####OS X
+```brew install postgresql```
+
+#####Ubuntu
+```apt-get install libpq-dev```
+
+#####All
+```pip install psycopg2```
+
+
 ##Getting started:
 
 For most testing and development work you'll need both a config.json and a sqlite3 database.
