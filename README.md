@@ -37,17 +37,18 @@ Note: we use Ubuntu 14.04
 
 ```cd .. && rm -rf libsodium*```
 
-```cd```
+```cd ~```
 
 ```git clone https://github.com/ToxMe/toxme.se```
 
 ```pip install -r misc/requirements.txt```
 
-##Getting started
+##Getting started:
+
 For most testing and development work you'll need both a config.json and a sqlite3 database.
 
 A sample config.json is provided at misc/config.json
 
 A database can be generated locally by running ```sqlite3 -init misc/structure.sql database.db ""```
 
-Now just run python3 src/main.py and it should start automatically!
+Now just run ```python3 src/main.py``` and it should start automatically!
