@@ -42,9 +42,8 @@ ACTION_UNPUBLISH = 2
 ACTION_LOOKUP    = 3
 ACTION_STATUS    = 4
 ACTION_RLOOKUP    = 5
-ACTION_RESET    = 6
 INVOKABLE_ACTIONS = {ACTION_PUBLISH, ACTION_UNPUBLISH, ACTION_LOOKUP,
-                     ACTION_STATUS, ACTION_RLOOKUP, ACTION_RESET}
+                     ACTION_STATUS, ACTION_RLOOKUP}
 THROTTLE_THRESHOLD = 13
 
 VALID_KEY = re.compile(r"^[A-Fa-f0-9]{64}$")
@@ -63,7 +62,7 @@ SIGNATURE_ENC = nacl.encoding.Base64Encoder
 KEY_ENC = nacl.encoding.HexEncoder
 STORE_ENC = nacl.encoding.HexEncoder
 
-SECURE_MODE = 0
+SECURE_MODE = 1
 
 class CryptoCore(object):
     def __init__(self):
@@ -338,33 +337,6 @@ class APIReleaseName(APIHandler):
             hooks.did_delete_record(self.settings["hooks_state"], old)
         return
 
-class APIResetPassword(APIHandler):
-    def initialize(self, envelope):
-        self.envelope = envelope
-
-    def post(self):
-        clear = self._encrypted_payload_prologue(self.envelope)
-        if not clear:
-            return
-
-        ctime = int(time.time())
-        pk = clear.get("public_key", "").upper()
-        if (not VALID_KEY.match(pk)
-            or abs(ctime - clear.get("timestamp", 0)) > 300):
-            self.set_status(400)
-            self.json_payload(error_codes.ERROR_BAD_PAYLOAD)
-            LOGGER.warn("Invalid timestamp")
-            return
-
-        rec = self.settings["local_store"].get_by_id_ig(pk)[1]
-        salt = os.urandom(16)
-        password = new_password()
-        hash_ = salt + hashlib.sha512(salt + password.encode("ascii")).digest()
-
-        print dir(rec)
-
-        # ###### fix
-
 class APILookupID(tornado.web.RequestHandler):
     def initialize(self, envelope):
         self.envelope = envelope
@@ -512,8 +484,6 @@ def _make_handler_for_api_method(application, request, **kwargs):
         return APIStatus(application, request, envelope=envelope)
     elif action == ACTION_RLOOKUP:
         return APILookupName(application, request, envelope=envelope)
-    elif action == ACTION_RESET:
-        return APIResetPassword(application, request, envelope=envelope)
 
 class PublicKey(tornado.web.RequestHandler):
     def get(self):
