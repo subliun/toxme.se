@@ -8,4 +8,3 @@ qrcode==4.0.4
 requests==2.2.1
 six==1.6.1
 tornado==3.2
-psycopg2==2.6.1
