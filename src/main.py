@@ -2,7 +2,7 @@
 """
 * yuu.py
 * Author: stal, stqism; April 2014
-* Copyright (c) 2014 Zodiac Labs.
+* Copyright (c) 2015 Project ToxMe
 * Further licensing information: see LICENSE.
 """
 import tornado.ioloop
@@ -752,6 +752,11 @@ def main():
     with open("config.json", "r") as config_file:
         cfg = json.load(config_file)
 
+    try:
+        SECURE_MODE = cfg["secure_mode"]
+    except:
+        SECURE_MODE = 1
+
     ioloop = tornado.ioloop.IOLoop.instance()
     crypto_core = CryptoCore()
     local_store = database.Database(cfg["database_url"])
@@ -773,7 +778,7 @@ def main():
     LOGGER.info("API public key: {0}".format(crypto_core.public_key))
     LOGGER.info("Record sign key: {0}".format(crypto_core.verify_key))
 
-    templates_dir = "_".join(("templates", cfg["templates"]))
+    templates_dir = "../templates/" + cfg["templates"]
     handlers = [
         ("/api", _make_handler_for_api_method),
         ("/pk", PublicKey),
@@ -788,7 +793,7 @@ def main():
     app = tornado.web.Application(
         handlers,
         template_path=os.path.join(os.path.dirname(__file__), templates_dir),
-        static_path=os.path.join(os.path.dirname(__file__), "static"),
+        static_path=os.path.join(os.path.dirname(__file__), "../static"),
         crypto_core=crypto_core,
         local_store=local_store,
         lookup_core=lookup_core,
