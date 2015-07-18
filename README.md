@@ -1,3 +1,5 @@
+##Notice: https://github.com/ToxMe/toxme.se is our new source repo
+###https://github.com/Tox/toxme.se is depreciated and unmaintained
 #ToxMe source
 
 ToxMe is a speedy and feature packed Tox3 DNS discovery server.
