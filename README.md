@@ -67,3 +67,8 @@ Now just run python3 src/main.py and it should start automatically!
 ##Tips:
 
 If you're testing it locally make sure secure_mode in config.json is marked off (0) otherwise you'll be required to reverse proxy it and use an SSL cert
+
+##Documentation:
+- [API refrence](/doc/api.md)
+- [config optionsl](/doc/config.md)
+- [PyToxMe](https://github.com/ToxMe/PyToxMe)
