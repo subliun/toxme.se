@@ -70,5 +70,5 @@ If you're testing it locally make sure secure_mode in config.json is marked off 
 
 ##Documentation:
 - [API refrence](/doc/api.md)
-- [config optionsl](/doc/config.md)
+- [config options](/doc/config.md)
 - [PyToxMe](https://github.com/ToxMe/PyToxMe)
