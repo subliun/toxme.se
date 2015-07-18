@@ -412,7 +412,7 @@ class APILookupName(tornado.web.RequestHandler):
             self.finish()
             return
         else:
-            if len(id) != 76:
+            if len(id) != 64:
                 self.set_status(400)
                 self.write(error_codes.ERROR_INVALID_ID)
                 LOGGER.warn("ID unknown")

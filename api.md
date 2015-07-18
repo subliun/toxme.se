@@ -15,7 +15,7 @@ lookup (3): {
     "name": <name>
 }
 ```
-Where <name> is a name[@domain.com] ID. If the domain part is omittted, the 
+Where <name> is a name[@domain.com] ID. If the domain part is omittted, the
 server decides where to look up.
 
 ```
@@ -24,7 +24,7 @@ reverse lookup (5): {
     "id": <name>
 }
 ```
-Where ID is a Tox ID. If the ID exists and the account associated with it is not marked private a name will be returned.
+Where ID is a Tox ID's public key. If the key exists and the account associated with it is not marked private a name will be returned.
 
 ### "Authenticated" APIs:
 
@@ -40,7 +40,7 @@ Where ID is a Tox ID. If the ID exists and the account associated with it is not
 The following payloads are JSON strings encrypted with crypto_box, then encoded
 to base64.
 
-push (1): 
+push (1):
 ```
 {
     "tox_id": <full Tox ID (hex, 72 chars)>
@@ -51,7 +51,7 @@ push (1):
 }
 ```
 
-delete (2): 
+delete (2):
 ```
 {
     "public_key": <public key (64 chars hex)>
@@ -61,7 +61,7 @@ delete (2):
 
 ### Return values:
 
-Returns take the form 
+Returns take the form
 ```
 {
     "c": <error code>
@@ -105,16 +105,16 @@ the private key.
 }
 ```
 
-For lookup, information is included about the ID: 
+For lookup, information is included about the ID:
 ```
 {
     "version": "Tox V2 (local; requires PIN)",
-    "source": 1, 
-    "public_key": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855", 
-    "c": 0, 
-    "url": "tox://groupbot@toxme.se", 
-    "name": "groupbot", 
-    "regdomain": "toxme.se", 
+    "source": 1,
+    "public_key": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855",
+    "c": 0,
+    "url": "tox://groupbot@toxme.se",
+    "name": "groupbot",
+    "regdomain": "toxme.se",
     "verify": {
         "status": 1,
         "detail": "Good (signed by local authority)"
