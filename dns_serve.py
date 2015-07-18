@@ -77,13 +77,13 @@ class ToxResolver(dnslib.server.BaseResolver):
         self.ireg = cfg["registration_domain"]
         self.home_addresses = cfg.get("home_addresses")
         self.home_addresses_6 = cfg.get("home_addresses_6")
+        
         if not self.ireg.endswith("."):
             self.ireg = "".join((self.ireg, "."))
-
-        self.auth = cfg["dns_authority_name"]
-        self.auth2 = cfg["dns_authority_name2"]
-        self.auth3 = cfg["dns_authority_name3"]
-        self.soa_rd = dnslib.SOA(cfg["dns_authority_name"],
+            
+        self.authority_list = cfg["dns_authority_names"]
+            
+        self.soa_rd = dnslib.SOA(self.authority_list[0],
                                  cfg["dns_hostmaster"].replace("@", "."))
         self.soa = dnslib.RR("_tox.{0}".format(self.ireg), 6, ttl=86400,
                              rdata=self.soa_rd)
@@ -159,15 +159,10 @@ class ToxResolver(dnslib.server.BaseResolver):
             reply.add_answer(self.soa)
             return reply
         elif question.qtype == 2:
-            reply.add_answer(dnslib.RR(req_name, 2, ttl=86400,
-                                       rdata=dnslib.NS(self.auth.encode("utf8"))
-                                       ))
-            reply.add_answer(dnslib.RR(req_name, 2, ttl=86400,
-                                       rdata=dnslib.NS(self.auth2.encode("utf8"))
-                                       ))
-            reply.add_answer(dnslib.RR(req_name, 2, ttl=86400,
-                                       rdata=dnslib.NS(self.auth3.encode("utf8"))
-                                       ))
+            for name in self.authority_list:
+                reply.add_answer(dnslib.RR(req_name, 2, ttl=86400,
+                                           rdata=dnslib.NS(name.encode("utf8"))
+                                           ))
             return reply
         elif question.qtype == 1 and self.home_addresses:
             for ip in self.home_addresses:
