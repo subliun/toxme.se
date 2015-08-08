@@ -126,8 +126,9 @@ VOWELS     = "aeiou"
 
 def new_password():
     def sylfunc():
-        return "".join([random.choice(CONSONANTS), random.choice(VOWELS),
-                        random.choice(CONSONANTS)])
+        rng = random.SystemRandom()
+        return "".join([rng.choice(CONSONANTS), rng.choice(VOWELS),
+                        rng.choice(CONSONANTS)])
     return "-".join(
         [sylfunc() for x in range(random.randint(4, 6))]
     )
