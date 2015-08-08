@@ -46,7 +46,7 @@ push (1):
     "tox_id": <full Tox ID (hex, 72 chars)>
     "name": <name>
     "privacy": <looseness level; if it's > 1 it appears in /friends>
-    "bio": <a bio string (cf https://toxme.se/friends/0, the bio appears in the speech bubbles)>
+    "bio": <a bio string (cf https://toxme.io/friends/0, the bio appears in the speech bubbles)>
     "timestamp": <the current UTC time as unix timestamp>
 }
 ```
@@ -112,9 +112,9 @@ For lookup, information is included about the ID:
     "source": 1,
     "public_key": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855",
     "c": 0,
-    "url": "tox://groupbot@toxme.se",
+    "url": "tox://groupbot@toxme.io",
     "name": "groupbot",
-    "regdomain": "toxme.se",
+    "regdomain": "toxme.io",
     "verify": {
         "status": 1,
         "detail": "Good (signed by local authority)"
