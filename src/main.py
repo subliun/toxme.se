@@ -41,8 +41,9 @@ ACTION_UNPUBLISH = 2
 ACTION_LOOKUP    = 3
 ACTION_STATUS    = 4
 ACTION_RLOOKUP    = 5
+ACTION_SEARCH     = 6
 INVOKABLE_ACTIONS = {ACTION_PUBLISH, ACTION_UNPUBLISH, ACTION_LOOKUP,
-                     ACTION_STATUS, ACTION_RLOOKUP}
+                     ACTION_STATUS, ACTION_RLOOKUP, ACTION_SEARCH}
 THROTTLE_THRESHOLD = 13
 
 VALID_KEY = re.compile(r"^[A-Fa-f0-9]{64}$")
@@ -413,6 +414,41 @@ class APILookupName(tornado.web.RequestHandler):
                 self.finish()
                 return
             self._results(self._build_local_result(id))
+            return
+
+class APISearch(tornado.web.RequestHandler):
+    def initialize(self, envelope):
+        self.envelope = envelope
+
+    def _results(self, result):
+        self.set_status(200 if result["c"] == 0 else 400)
+        self.write(result)
+        self.finish()
+
+    def _build_local_result(self, name):
+        users = self.settings["local_store"].search_users(name)
+        base_ret = {
+            "c": 0,
+            "name": [user.name for user in users],
+        }
+        return base_ret
+
+    @tornado.web.asynchronous
+    def post(self):
+        name = self.envelope.get("name").lower()
+        if not name:
+            self.set_status(400)
+            self.write(error_codes.ERROR_BAD_PAYLOAD)
+            LOGGER.warn("No name given")
+            self.finish()
+            return
+        else:
+            if len(name) > NAME_LIMIT_HARD:
+                self.set_status(400)
+                self.write(error_codes.ERROR_BAD_PAYLOAD)
+                LOGGER.warn("Name too long")
+                self.finish()
+            self._results(self._build_local_result(name))
             return
 
 class APIStatus(tornado.web.RequestHandler):

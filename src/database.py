@@ -237,6 +237,14 @@ class Database(object):
             sess.commit()
         sess.close()
 
+    def search_users(self, name):
+        sess = self.gs()
+        results = (sess.query(User)
+                   .filter(User.privacy > 0)
+                   .order_by(User.name))
+        sess.close()
+        return [user for user in results if name in user.name]
+
     def delete_pk(self, pk):
         sess = self.gs()
         sess.query(User).filter_by(public_key=pk).delete()
