@@ -52,7 +52,7 @@ REMOVE_NEWLINES = re.compile("[\r\n]+")
 DISALLOWED_CHARS = set(" @/:;()\"'")
 DISALLOWED_NAMES = {}
 NAME_LIMIT_HARD  = 63
-BIO_LIMIT        = 250 # fixme this should be configurable
+BIO_LIMIT        = 1372 # fixme this should be configurable || hue hue
 
 ENTRIES_PER_PAGE = 30
 
