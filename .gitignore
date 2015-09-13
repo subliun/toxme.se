@@ -9,4 +9,6 @@ te3.py
 __pycache__
 key
 djbroot
+.idea/
 keybag.json
+config.json

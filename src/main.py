@@ -350,14 +350,14 @@ class APILookupID(tornado.web.RequestHandler):
             "c": 0,
             "name": rec.name,
             "regdomain": self.settings["home"],
-            "public_key": rec.tox_id(),
+            "tox_id": rec.tox_id(),
             "url": "tox:{0}@{1}".format(rec.name, self.settings["home"]),
             "verify": {
                 "status": dns_discovery.SIGNSTATUS_GOOD,
                 "detail": "Good (signed by local authority)",
             },
             "source": dns_discovery.SOURCE_LOCAL,
-            "version": "Tox V1 (local)"
+            "version": "Tox V3 (local)"
         }
         return base_ret
 

@@ -108,9 +108,9 @@ the private key.
 For lookup, information is included about the ID:
 ```
 {
-    "version": "Tox V2 (local; requires PIN)",
+    "version": "Tox V3 (local)",
     "source": 1,
-    "public_key": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855",
+    "tox_id": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855D34D34D37CB5",
     "c": 0,
     "url": "tox://groupbot@toxme.io",
     "name": "groupbot",
