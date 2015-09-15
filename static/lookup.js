@@ -35,12 +35,12 @@ function sc_showResultOnUI(payload) {
     }
     document.getElementById("lu_stype").textContent = source;
     document.getElementById("lu_rectype").textContent = payload.version;
-    if (payload.public_key.length === 64) {
+    if (payload.tox_id.length === 64) {
         document.getElementById("results").className = "v2";
-        document.getElementById("lu_user_pk").textContent = payload.public_key;
+        document.getElementById("lu_user_pk").textContent = payload.tox_id;
     } else {
         document.getElementById("results").className = "v1";
-        document.getElementById("lu_user_id").textContent = payload.public_key;
+        document.getElementById("lu_user_id").textContent = payload.tox_id;
     }
     sigbox = document.getElementById("lu_user_sig");
     sname = encodeURIComponent(payload.name);
