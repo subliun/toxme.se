@@ -41,10 +41,10 @@ ERROR_LOOKUP_INTERNAL = {"c": -43}
 # Client is publishing IDs too fast
 ERROR_RATE_LIMIT = {"c": -4}
 
-#reverse lookup not found
+# Reverse lookup not found
 ERROR_UNKNOWN_NAME = {"c": -30}
 
-#sent bullshit in place of an ID
+# Invalid ID
 ERROR_INVALID_ID = {"c": -31}
 
 DESCRIPTIONS = {

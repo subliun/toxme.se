@@ -237,11 +237,11 @@ class Database(object):
             sess.commit()
         sess.close()
 
-    def search_users(self, name):
+    def search_users(self, name, length, num):
         sess = self.gs()
         results = (sess.query(User)
                    .filter(User.privacy > 0)
-                   .order_by(User.name))
+                   .order_by(User.name).limit(length).offset(num * length))
         sess.close()
         return [user for user in results if name in user.name]
 

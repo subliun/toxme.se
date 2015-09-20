@@ -55,6 +55,7 @@ NAME_LIMIT_HARD  = 63
 BIO_LIMIT        = 1372 # fixme this should be configurable || hue hue
 
 ENTRIES_PER_PAGE = 30
+ENTRIES_PER_SEARCH = 30
 
 #pragma mark - crypto
 
@@ -426,30 +427,39 @@ class APISearch(tornado.web.RequestHandler):
         self.write(result)
         self.finish()
 
-    def _build_local_result(self, name):
-        users = self.settings["local_store"].search_users(name)
+    def _build_local_result(self, name, page):
+        users = self.settings["local_store"].search_users(name, ENTRIES_PER_SEARCH, page)
         base_ret = {
             "c": 0,
-            "name": [user.name for user in users],
+            "users": [{"name": user.name, "bio": user.bio} for user in users],
         }
         return base_ret
 
     @tornado.web.asynchronous
     def post(self):
         name = self.envelope.get("name").lower()
+        page = self.envelope.get("page")
+
+        if (type(page) is not int) or page < 0:
+            self.set_status(400)
+            self.write(error_codes.ERROR_INVALID_CHAR)
+            LOGGER.warn("Invalid page")
+            self.finish()
+            return
+
         if not name:
             self.set_status(400)
-            self.write(error_codes.ERROR_BAD_PAYLOAD)
+            self.write(error_codes.ERROR_INVALID_NAME)
             LOGGER.warn("No name given")
             self.finish()
             return
         else:
             if len(name) > NAME_LIMIT_HARD:
                 self.set_status(400)
-                self.write(error_codes.ERROR_BAD_PAYLOAD)
+                self.write(error_codes.ERROR_INVALID_NAME)
                 LOGGER.warn("Name too long")
                 self.finish()
-            self._results(self._build_local_result(name))
+            self._results(self._build_local_result(name, page))
             return
 
 class APIStatus(tornado.web.RequestHandler):
@@ -515,6 +525,8 @@ def _make_handler_for_api_method(application, request, **kwargs):
         return APIStatus(application, request, envelope=envelope)
     elif action == ACTION_RLOOKUP:
         return APILookupName(application, request, envelope=envelope)
+    elif action == ACTION_SEARCH:
+        return APISearch(application, request, envelope=envelope)
 
 class PublicKey(tornado.web.RequestHandler):
     def get(self):

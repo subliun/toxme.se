@@ -1,4 +1,3 @@
-**Changed 2014/06/22: Longer named parameters and deprecated PIN**
 
 ### How to read:
 - JSON is inlined between { }.
@@ -15,16 +14,26 @@ lookup (3): {
     "name": <name>
 }
 ```
-Where <name> is a name[@domain.com] ID. If the domain part is omittted, the
+Where `<name>` is a name[@domain.com] ID. If the domain part is omittted, the
 server decides where to look up.
 
 ```
 reverse lookup (5): {
     "action": 5,
-    "id": <name>
+    "id": <id>
 }
 ```
 Where ID is a Tox ID's public key. If the key exists and the account associated with it is not marked private a name will be returned.
+
+```
+search (6): {
+    "action": 6
+    "name": <query name>
+    "page": <page number>
+}
+```
+Where "name" is the partial name that will be searched for and "page" is the offset (page * ENTRIES_PER_SEARCH) for the returned list.
+Note: This query returns a list of users, not IDs. If you have a full toxme name and want to lookup the ID, use lookup(3).
 
 ### "Authenticated" APIs:
 
@@ -71,26 +80,43 @@ Returns take the form
 Possible codes:
 ```
 ERROR_OK = {"c": 0}
+
 # Client didn't POST to /api
 ERROR_METHOD_UNSUPPORTED = {"c": -1}
+
 # Client is not using a secure connection
 ERROR_NOTSECURE = {"c": -2}
+
 # Bad encrypted payload (not encrypted with our key)
 ERROR_BAD_PAYLOAD = {"c": -3}
+
 # Name is taken.
 ERROR_NAME_TAKEN = {"c": -25}
+
 # The public key given is bound to a name already.
 ERROR_DUPE_ID = {"c": -26}
-#name not found
+
+# Invalid char or type was used in a request.
+ERROR_INVALID_CHAR = {"c": -27}
+
+# Invalid name was sent
+ERROR_INVALID_NAME = {"c": -29}
+
+# Name not found
 ERROR_UNKNOWN_NAME = {"c": -30}
-#sent invalid data in place of an ID
+
+# Sent invalid data in place of an ID
 ERROR_INVALID_ID = {"c": -31}
+
 # Lookup failed because of an error on the other domain's side.
 ERROR_LOOKUP_FAILED = {"c": -41}
+
 # Lookup failed because that user doesn't exist on the domain
 ERROR_NO_USER = {"c": -42}
+
 # Lookup failed because of an error on our side.
 ERROR_LOOKUP_INTERNAL = {"c": -43}
+
 # Client is publishing IDs too fast
 ERROR_RATE_LIMIT = {"c": -4}
 ```
@@ -105,7 +131,7 @@ the private key.
 }
 ```
 
-For lookup, information is included about the ID:
+For lookup(3), information is included about the ID:
 ```
 {
     "version": "Tox V3 (local)",
@@ -121,3 +147,8 @@ For lookup, information is included about the ID:
     }
 }
 ```
+
+For search(4), an array of users that matched the query name is returned. Each user dict contains their full 
+toxme name and bio. The array will always be of length ENTRIES_PER_SEARCH (30) or shorter. If no matching names are 
+found the users array is empty.
+
