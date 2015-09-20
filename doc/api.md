@@ -151,4 +151,11 @@ For lookup(3), information is included about the ID:
 For search(4), an array of users that matched the query name is returned. Each user dict contains their full 
 toxme name and bio. The array will always be of length ENTRIES_PER_SEARCH (30) or shorter. If no matching names are 
 found the users array is empty.
-
+```
+{
+    "c": 0,
+    "users": [{
+        "name": <name>
+        "bio": <bio>
+    }]
+}
