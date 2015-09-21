@@ -9,38 +9,30 @@ Quick notes before we get started, ToxMe's source is not required to access and 
 ###OS X
 Install homebrew from http://brew.sh
 
-```brew install libsodium python3 git libffi```
-
-```git clone https://github.com/subliun/toxme```
-
-```pip install -r misc/requirements.txt```
+```bash
+brew install libsodium python3 git libffi
+git clone https://github.com/subliun/toxme
+pip install -r misc/requirements.txt
+```
 
 And you should be ready!
 
 ###Ubuntu
 Note: we use Ubuntu 14.04
 
-```apt-get install python3 python3-pip libffi-dev build-essential wget git sqlite```
-
-```wget -P /tmp/ https://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz```
-
-```cd /tmp/```
-
-```tar -xvf libsodium-1.0.3.tar.gz```
-
-```cd libsodium*```
-
-```./configure --prefix=/usr```
-
-```make -j4 && make install```
-
-```cd .. && rm -rf libsodium*```
-
-```cd ~```
-
-```git clone https://github.com/subliun/toxme```
-
-```pip install -r misc/requirements.txt```
+```bash
+apt-get install python3 python3-pip libffi-dev build-essential wget git sqlite
+wget -P /tmp/ https://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz
+cd /tmp/
+tar -xvf libsodium-1.0.3.tar.gz
+cd libsodium*
+./configure --prefix=/usr
+make -j4 && make install
+cd .. && rm -rf libsodium*
+cd ~
+git clone https://github.com/subliun/toxme
+pip install -r misc/requirements.txt
+```
 
 ### Optional:
 #### postgres support:
