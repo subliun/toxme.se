@@ -243,8 +243,9 @@ class Database(object):
                    .filter(User.privacy > 0)
                    .order_by(User.name))
         sess.close()
-        start = length * num if length * num < len(results) else len(results)
-        end = start + length if start + length < len(results) else len(results)
+        result_len = results.count()
+        start = length * num if length * num < result_len else results_len
+        end = start + length if start + length < result_len else results_len
         return list(user for user in results if name in user.name)[start:end]
 
     def delete_pk(self, pk):
