@@ -241,9 +241,11 @@ class Database(object):
         sess = self.gs()
         results = (sess.query(User)
                    .filter(User.privacy > 0)
-                   .order_by(User.name).limit(length).offset(num * length))
+                   .order_by(User.name))
         sess.close()
-        return [user for user in results if name in user.name]
+        start = length * num if length * num < len(results) else len(results)
+        end = start + length if start + length < len(results) else len(results)
+        return list(user for user in results if name in user.name)[start:end]
 
     def delete_pk(self, pk):
         sess = self.gs()
