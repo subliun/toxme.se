@@ -87,7 +87,7 @@ ERROR_METHOD_UNSUPPORTED = {"c": -1}
 # Client is not using a secure connection
 ERROR_NOTSECURE = {"c": -2}
 
-# Bad encrypted payload (not encrypted with our key)
+# Bad payload (possibly not encrypted with the correct key)
 ERROR_BAD_PAYLOAD = {"c": -3}
 
 # Name is taken.
@@ -138,7 +138,7 @@ For lookup(3), information is included about the ID:
     "source": 1,
     "tox_id": "56A1ADE4B65B86BCD51CC73E2CD4E542179F47959FE3E0E21B4B0ACDADE51855D34D34D37CB5",
     "c": 0,
-    "url": "tox://groupbot@toxme.io",
+    "url": "tox:groupbot@toxme.io",
     "name": "groupbot",
     "regdomain": "toxme.io",
     "verify": {
