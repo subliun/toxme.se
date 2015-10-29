@@ -1,6 +1,6 @@
 #ToxMe source
 
-ToxMe is a speedy and feature packed Tox3 DNS discovery server.
+ToxMe is a speedy and feature-packed Tox name resolution server.
 
 ##Installing:
 
