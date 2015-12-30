@@ -46,7 +46,7 @@ Note: This query returns a list of users, not IDs. If you have a full toxme name
     "nonce": <a 24-byte nonce (base64)>
 }
 ```
-The following payloads are JSON strings encrypted with crypto_box, then encoded
+The following payloads are JSON strings encrypted with crypto_box using toxme's public key (available at https://example.com/pk) and the private key of the profile that is being registered, then encoded
 to base64.
 
 push (1):
