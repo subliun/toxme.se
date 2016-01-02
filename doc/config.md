@@ -29,11 +29,6 @@ The IP ToxMe listens on.
 
 Where ToxMe places it's own PID. Useful for daemons.
 
-###DNS record TTL
-```"dns_record_ttl": 60```
-
-The amount of time recursive DNS resolvers should cache entries.
-
 ###Is proxied
 ```"is_proxied": 1```
 
@@ -64,22 +59,3 @@ Enables friend discovery features.
 ```"number_of_workers": 2```
 
 Number of processes to use.
-
-###Enable DNS server
-```"enable_dns_server": true```
-
-Makes ToxMe respond to DNS requests.
-
-###DNS authority names
-```
-"dns_authority_names": [
-    "locahost"
-]
-```
-
-Nameservers to return when queried. Note: This is a list so you can use multiple names.
-
-###DNS listening address
-```"dns_listen_addr": "localhost"```
-
-IP the DNS server should listen on.

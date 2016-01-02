@@ -30,8 +30,6 @@ from collections import Counter, defaultdict
 
 import error_codes
 import barcode
-import dns_discovery
-import dns_serve
 
 tornado.log.enable_pretty_logging()
 LOGGER = logging.getLogger("toxme")
@@ -56,6 +54,13 @@ BIO_LIMIT        = 1372 # fixme this should be configurable || hue hue
 
 ENTRIES_PER_PAGE = 30
 ENTRIES_PER_SEARCH = 30
+
+SIGNSTATUS_GOOD      = 1
+SIGNSTATUS_BAD       = 2
+SIGNSTATUS_UNDECIDED = 3
+
+SOURCE_LOCAL  = 1
+SOURCE_REMOTE = 2
 
 #pragma mark - crypto
 
@@ -354,10 +359,10 @@ class APILookupID(tornado.web.RequestHandler):
             "tox_id": rec.tox_id(),
             "url": "tox:{0}@{1}".format(rec.name, self.settings["home"]),
             "verify": {
-                "status": dns_discovery.SIGNSTATUS_GOOD,
+                "status": SIGNSTATUS_GOOD,
                 "detail": "Good (signed by local authority)",
             },
-            "source": dns_discovery.SOURCE_LOCAL,
+            "source": SOURCE_LOCAL,
             "version": "Tox V3 (local)"
         }
         return base_ret
@@ -378,7 +383,7 @@ class APILookupID(tornado.web.RequestHandler):
             self._results(self._build_local_result(user))
             return
         else:
-            self.settings["lookup_core"].dispatch_lookup(name, self._results)
+            LOGGER.warn("What (a) Terrible (dns-related) Failure")
 
 class APILookupName(tornado.web.RequestHandler):
     def initialize(self, envelope):
@@ -803,8 +808,6 @@ def main():
     ioloop = tornado.ioloop.IOLoop.instance()
     crypto_core = CryptoCore()
     local_store = database.Database(cfg["database_url"])
-    lookup_core = dns_discovery.DNSCore(cfg["number_of_workers"])
-    lookup_core.callback_dispatcher = lambda cb, r: ioloop.add_callback(cb, r)
 
     # an interesting object structure
     if cfg["sandbox"] == 0:
@@ -835,7 +838,6 @@ def main():
         static_path=os.path.join(os.path.dirname(__file__), "../static"),
         crypto_core=crypto_core,
         local_store=local_store,
-        lookup_core=lookup_core,
         address_ctr=address_ctr,
         hooks_state=None,
         app_startup=int(time.time()),
@@ -846,11 +848,6 @@ def main():
         "xheaders": cfg.get("is_proxied")
     })
     server.listen(cfg["server_port"], cfg["server_addr"])
-
-    if cfg.get("enable_dns_server", 0):
-        server = dns_serve.server(crypto_core, local_store, cfg)
-        server.start_thread()
-        LOGGER.info("DNS server activated.")
 
     if "suid" in cfg:
         LOGGER.info("Descending...")

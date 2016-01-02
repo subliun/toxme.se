@@ -5,7 +5,6 @@
     "server_port": 8080,
     "server_addr": "127.0.0.1",
     "pid_file": "pidfile.dl",
-    "dns_record_ttl": 60,
     "secure_mode": 0,
     "is_proxied": 0,
     "templates" : "tox",
