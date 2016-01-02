@@ -27,6 +27,8 @@ import random
 import hashlib
 import urllib.parse as parse
 from collections import Counter, defaultdict
+import base64
+import binascii
 
 import error_codes
 import barcode
@@ -142,12 +144,39 @@ def new_password():
 class HTTPSPolicyEnforcer(tornado.web.RequestHandler):
     def _fail(self):
         self.set_status(400)
-        self.write(error_codes.ERROR_NOTSECURE)
+        self.write_secure(error_codes.ERROR_NOTSECURE)
         return ""
 
     post = get = _fail
 
-class APIHandler(tornado.web.RequestHandler):
+
+SIGNED_RANDOM_LENGTH = 64
+
+class BaseAPIHandler(tornado.web.RequestHandler):
+
+    def handle_envelope_hash(self, envelope):
+        self.signed_hash = None
+        if "memorabilia" in envelope and isinstance(envelope["memorabilia"], str):
+            try:
+                decoded = base64.b64decode(envelope["memorabilia"].encode('ascii'))
+                LOGGER.info(len(decoded))
+                if len(decoded) == SIGNED_RANDOM_LENGTH:
+                    self.signed_hash = self.settings["crypto_core"].skey.sign(decoded)
+                    LOGGER.info(self.signed_hash)
+            except (ValueError, TypeError, KeyError, binascii.Error, nacl.exceptions.CryptoError):
+                LOGGER.info("did fail request because random data was bad")
+
+    def write_secure(self, chunk):
+        newchunk = chunk
+        if isinstance(chunk, dict):
+            newchunk = chunk.copy()
+            if self.signed_hash is not None:
+                newchunk["signed_memorabilia"] = str(base64.b64encode(self.signed_hash), 'ascii')
+                self.signed_hash = None
+
+        self.write(newchunk)
+
+class APIHandler(BaseAPIHandler):
     RETURNS_JSON = 1
 
     @staticmethod
@@ -196,7 +225,7 @@ class APIHandler(tornado.web.RequestHandler):
 
     def json_payload(self, payload):
         if self.RETURNS_JSON:
-            self.write(payload)
+            self.write_secure(payload)
         else:
             self.render("api_error_pretty.html", payload=payload,
                         f=error_codes.DESCRIPTIONS[payload["c"]])
@@ -243,6 +272,7 @@ class APIHandler(tornado.web.RequestHandler):
 class APIUpdateName(APIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def post(self):
         if self.settings["address_ctr"]:
@@ -256,7 +286,7 @@ class APIUpdateName(APIHandler):
 
             if ctr["counter"][self.request.remote_ip] > THROTTLE_THRESHOLD:
                 self.set_status(400)
-                self.write(error_codes.ERROR_RATE_LIMIT)
+                self.write_secure(error_codes.ERROR_RATE_LIMIT)
                 return
 
         clear = self._encrypted_payload_prologue(self.envelope)
@@ -267,7 +297,7 @@ class APIUpdateName(APIHandler):
                                             "timestamp": int, "privacy": int,
                                             "bio": str}):
             self.set_status(400)
-            self.write(error_codes.ERROR_BAD_PAYLOAD)
+            self.write_secure(error_codes.ERROR_BAD_PAYLOAD)
             LOGGER.warn("encrypted payload incorrect")
             return
 
@@ -318,6 +348,7 @@ class APIUpdateName(APIHandler):
 class APIReleaseName(APIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def post(self):
         clear = self._encrypted_payload_prologue(self.envelope)
@@ -339,13 +370,14 @@ class APIReleaseName(APIHandler):
         self.json_payload(error_codes.ERROR_OK)
         return
 
-class APILookupID(tornado.web.RequestHandler):
+class APILookupID(BaseAPIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def _results(self, result):
         self.set_status(200 if result["c"] == 0 else 400)
-        self.write(result)
+        self.write_secure(result)
         self.finish()
 
     def _build_local_result(self, name):
@@ -372,7 +404,7 @@ class APILookupID(tornado.web.RequestHandler):
         name = self.envelope.get("name").lower()
         if not name or name.endswith("@") or name.startswith("@"):
             self.set_status(400)
-            self.write(error_codes.ERROR_BAD_PAYLOAD)
+            self.write_secure(error_codes.ERROR_BAD_PAYLOAD)
             LOGGER.warn("Name invalid")
             self.finish()
             return
@@ -385,13 +417,14 @@ class APILookupID(tornado.web.RequestHandler):
         else:
             LOGGER.warn("What (a) Terrible (dns-related) Failure")
 
-class APILookupName(tornado.web.RequestHandler):
+class APILookupName(BaseAPIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def _results(self, result):
         self.set_status(200 if result["c"] == 0 else 400)
-        self.write(result)
+        self.write_secure(result)
         self.finish()
 
     def _build_local_result(self, id):
@@ -409,27 +442,28 @@ class APILookupName(tornado.web.RequestHandler):
         id = self.envelope.get("id").lower()
         if not id:
             self.set_status(400)
-            self.write(error_codes.ERROR_BAD_PAYLOAD)
+            self.write_secure(error_codes.ERROR_BAD_PAYLOAD)
             LOGGER.warn("ID unknown")
             self.finish()
             return
         else:
             if len(id) != 64:
                 self.set_status(400)
-                self.write(error_codes.ERROR_INVALID_ID)
+                self.write_secure(error_codes.ERROR_INVALID_ID)
                 LOGGER.warn("ID unknown")
                 self.finish()
                 return
             self._results(self._build_local_result(id))
             return
 
-class APISearch(tornado.web.RequestHandler):
+class APISearch(BaseAPIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def _results(self, result):
         self.set_status(200 if result["c"] == 0 else 400)
-        self.write(result)
+        self.write_secure(result)
         self.finish()
 
     def _build_local_result(self, name, page):
@@ -447,33 +481,34 @@ class APISearch(tornado.web.RequestHandler):
 
         if (type(page) is not int) or page < 0:
             self.set_status(400)
-            self.write(error_codes.ERROR_INVALID_CHAR)
+            self.write_secure(error_codes.ERROR_INVALID_CHAR)
             LOGGER.warn("Invalid page")
             self.finish()
             return
 
         if not name:
             self.set_status(400)
-            self.write(error_codes.ERROR_INVALID_NAME)
+            self.write_secure(error_codes.ERROR_INVALID_NAME)
             LOGGER.warn("No name given")
             self.finish()
             return
         else:
             if len(name) > NAME_LIMIT_HARD:
                 self.set_status(400)
-                self.write(error_codes.ERROR_INVALID_NAME)
+                self.write_secure(error_codes.ERROR_INVALID_NAME)
                 LOGGER.warn("Name too long")
                 self.finish()
             self._results(self._build_local_result(name, page))
             return
 
-class APIStatus(tornado.web.RequestHandler):
+class APIStatus(BaseAPIHandler):
     def initialize(self, envelope):
         self.envelope = envelope
+        self.handle_envelope_hash(envelope)
 
     def _results(self, result):
         self.set_status(200 if result["c"] == 0 else 400)
-        self.write(result)
+        self.write_secure(result)
         self.finish()
 
     @staticmethod
@@ -533,24 +568,24 @@ def _make_handler_for_api_method(application, request, **kwargs):
     elif action == ACTION_SEARCH:
         return APISearch(application, request, envelope=envelope)
 
-class PublicKey(tornado.web.RequestHandler):
+class PublicKey(BaseAPIHandler):
     def get(self):
         if SECURE_MODE:
             if self.request.protocol != "https":
-                self.write(error_codes.ERROR_NOTSECURE)
+                self.write_secure(error_codes.ERROR_NOTSECURE)
             else:
-                self.write({
+                self.write_secure({
                     "c": 0,
                     "key": self.settings["crypto_core"].public_key
                 })
         else:
-            self.write({
+            self.write_secure({
                 "c": 0,
                 "key": self.settings["crypto_core"].public_key
             })
 
 
-class CreateQR(tornado.web.RequestHandler):
+class CreateQR(BaseAPIHandler):
     def _fail(self):
         self.set_status(404)
         return
@@ -558,7 +593,7 @@ class CreateQR(tornado.web.RequestHandler):
     def get(self, path_id):
         if SECURE_MODE:
             if self.request.protocol != "https":
-                self.write(error_codes.ERROR_NOTSECURE)
+                self.write_secure(error_codes.ERROR_NOTSECURE)
                 return
         name = (parse.unquote(path_id) if path_id else "").lower()
         if not name or not set(name).isdisjoint(DISALLOWED_CHARS):
@@ -569,10 +604,10 @@ class CreateQR(tornado.web.RequestHandler):
 
         self.set_header("Cache-Control", "public; max-age=86400")
         self.set_header("Content-Type", "image/svg+xml; charset=utf-8")
-        self.write(barcode.QRImage.get(self.settings["local_store"].get(name).tox_id()))
+        self.write_secure(barcode.QRImage.get(self.settings["local_store"].get(name).tox_id()))
         return
 
-class LookupAndOpenUser(tornado.web.RequestHandler):
+class LookupAndOpenUser(BaseAPIHandler):
     def _user_id(self):
         spl = self.request.host.rsplit(".", 1)[0]
         if spl == self.request.host:
@@ -603,7 +638,7 @@ class LookupAndOpenUser(tornado.web.RequestHandler):
     def get(self, path_id=None):
         if SECURE_MODE:
             if self.request.protocol != "https":
-                self.write(error_codes.ERROR_NOTSECURE)
+                self.write_secure(error_codes.ERROR_NOTSECURE)
                 return
         name = (parse.unquote(path_id) if path_id else "").lower()
         if name:
@@ -611,7 +646,7 @@ class LookupAndOpenUser(tornado.web.RequestHandler):
         else:
             return self._lookup_home()
 
-class FindFriends(tornado.web.RequestHandler):
+class FindFriends(BaseAPIHandler):
     def _render_page(self, num):
         num = int(num)
         results = self.settings["local_store"].get_page(num,
@@ -630,7 +665,7 @@ class FindFriends(tornado.web.RequestHandler):
     def get(self, page):
         if SECURE_MODE:
             if self.request.protocol != "https":
-                self.write(error_codes.ERROR_NOTSECURE)
+                self.write_secure(error_codes.ERROR_NOTSECURE)
                 return
 
         return self._render_page(page)

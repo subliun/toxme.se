@@ -7,6 +7,13 @@
 
 Assume all requests are POSTed to /api.
 
+### Signing API for verification
+Every request accepts an optional additional field "memorabilia", which should be a 64-byte base64-encoded random sequence. 
+If this is specified, the return value will contain the field "signed_memorabilia", which is the sequence sent in the original 
+request signed with the toxme instance's private key, the corresponding public key of which can be found at example.com/pk
+If the "memorabilia" field contains invalid data or data of an invalid length, the appropriate response will be returned as 
+though "memorabilia" had not been specified.
+
 ### Anonymous APIs:
 ```
 lookup (3): {
