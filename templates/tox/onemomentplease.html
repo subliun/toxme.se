@@ -19,9 +19,12 @@
                 <a href="tox:{{ record.public_key }}{{ record.pin }}{{ record.checksum }}">Click here to add {{record.name}}.</a>
                 <br><br>You can also add <b>{{ record.name }}@{{ realm }}</b> in your client.
             </p>
-            {% if record.bio %}
             <div class="user_entry">
+                {% if record.bio %}
                 <p class="quote">{{ record.bio }}</p>
+                {% else %}
+                <p class="quote notext">(There is only silence.)</p>
+                {% end %}
                 <p class="quote_tail"></p>
                 <span class="username">
                     <b>{{ record.name }}</b><span class="de-emphasize">@{{ realm }}</span>
@@ -30,7 +33,6 @@
                 <p class="public_id"><b>Full Tox ID</b>: {{ record.public_key }}{{ record.pin }}{{ record.checksum }}</p>
                 {% end %}
             </div>
-            {% end %}
         </div>
         <div class="chunk barcode">
             <img src="/barcode/{{ url_escape(record.name) }}.svg">
