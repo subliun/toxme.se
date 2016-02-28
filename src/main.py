@@ -633,7 +633,8 @@ class LookupAndOpenUser(BaseAPIHandler):
                     realm=self.settings["home"])
 
     def _lookup_home(self):
-        self.render("lookup_home.html")
+        self.render("lookup_home.html",
+                    realm=self.settings["home"])
 
     def get(self, path_id=None):
         if SECURE_MODE:
