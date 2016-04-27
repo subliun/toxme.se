@@ -167,14 +167,17 @@ class BaseAPIHandler(tornado.web.RequestHandler):
                 LOGGER.info("did fail request because random data was bad")
 
     def write_secure(self, chunk):
-        newchunk = chunk
-        if isinstance(chunk, dict):
-            newchunk = chunk.copy()
-            if self.signed_hash is not None:
-                newchunk["signed_memorabilia"] = str(base64.b64encode(self.signed_hash), 'ascii')
-                self.signed_hash = None
-
-        self.write(newchunk)
+        new_chunk = chunk
+        try:
+            if isinstance(chunk, dict):
+                new_chunk = chunk.copy()
+                if self.signed_hash is not None:
+                    new_chunk["signed_memorabilia"] = str(base64.b64encode(self.signed_hash), 'ascii')
+                    self.signed_hash = None
+        except AttributeError:
+            LOGGER.info("did fail request because data was even worse")
+        
+        self.write(new_chunk)
 
 class APIHandler(BaseAPIHandler):
     RETURNS_JSON = 1
