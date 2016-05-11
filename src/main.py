@@ -859,12 +859,14 @@ def main():
     LOGGER.info("Record sign key: {0}".format(crypto_core.verify_key))
 
     templates_dir = "../templates/" + cfg["templates"]
+    robots_path=os.path.join(os.path.dirname(__file__), "../static")
     handlers = [
         ("/api", _make_handler_for_api_method),
         ("/pk", PublicKey),
         (r"/barcode/(.+)\.svg$", CreateQR),
         (r"/u/(.+)?$", LookupAndOpenUser),
-        (r"^/$", LookupAndOpenUser)
+        (r"^/$", LookupAndOpenUser),
+        (r'/robots.txt', tornado.web.StaticFileHandler, {'path': robots_path})
     ]
     if cfg["findfriends_enabled"]:
         handlers.append((r"/friends/([0-9]+)$", FindFriends))
