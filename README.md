@@ -11,7 +11,7 @@ Install homebrew from http://brew.sh
 
 ```bash
 brew install libsodium python3 git libffi
-git clone https://github.com/subliun/toxme
+git clone https://github.com/LittleVulpix/toxme
 pip install -r misc/requirements.txt
 ```
 
@@ -30,7 +30,7 @@ cd libsodium*
 make -j4 && make install
 cd .. && rm -rf libsodium*
 cd ~
-git clone https://github.com/subliun/toxme
+git clone https://github.com/LittleVulpix/toxme
 pip install -r misc/requirements.txt
 ```
 
