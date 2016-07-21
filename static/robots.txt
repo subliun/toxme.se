@@ -1,2 +1,3 @@
-User-agent: spbot
+User-agent: *
+Allow: /$
 Disallow: /
