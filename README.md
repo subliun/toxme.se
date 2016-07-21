@@ -1,3 +1,9 @@
+##You can contact the maintainer of the toxme.io freenode IRC, channel #tox.
+
+I can assist you with removing or changing your user account on toxme.io in the event that you forget your toxme.io-generated password.
+
+However, please note that you need to be able to prove the account in question is yours. This means that you need to have access to your old toxid.
+
 #ToxMe source
 
 ToxMe is a speedy and feature-packed Tox name resolution server.
