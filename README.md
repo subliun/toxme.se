@@ -1,8 +1,12 @@
-##You can contact the maintainer of the toxme.io freenode IRC, channel #tox.
+##You can contact the maintainer of the toxme.io directly.
+
+I can be found on freenode IRC, channel #tox , or you can add me from tox by adding toxmeio@toxme.io .
 
 I can assist you with removing or changing your user account on toxme.io in the event that you forget your toxme.io-generated password.
 
 However, please note that you need to be able to prove the account in question is yours. This means that you need to have access to your old toxid.
+
+I am not a tech support for tox issues. If you have an issue with tox, raise a ticket on github or ask someone on the IRC.
 
 #ToxMe source
 
