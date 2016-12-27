@@ -41,7 +41,8 @@ make -j4 && make install
 cd .. && rm -rf libsodium*
 cd ~
 git clone https://github.com/LittleVulpix/toxme
-pip install -r misc/requirements.txt
+cd toxme
+pip3 install -r misc/requirements.txt
 ```
 
 ### Optional:
@@ -52,7 +53,7 @@ pip install -r misc/requirements.txt
 #####Ubuntu
 ```apt-get install libpq-dev```
 
-#####All
+#####All ( For Ubuntu, use pip3 instead of pip )
 ```pip install psycopg2```
 
 
