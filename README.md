@@ -28,17 +28,17 @@ pip install -r misc/requirements.txt
 And you should be ready!
 
 ###Ubuntu
-Note: we use Ubuntu 14.04
+Note: we use Ubuntu 14.04, but newer releases should work too.
 
 ```bash
-apt-get install python3 python3-pip libffi-dev build-essential wget git sqlite
-wget -P /tmp/ https://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz
-cd /tmp/
-tar -xvf libsodium-1.0.3.tar.gz
-cd libsodium*
+apt-get install python3 python3-pip libffi-dev build-essential wget git sqlite libtool autotools-dev automake checkinstall check git yasm
+git clone https://github.com/jedisct1/libsodium.git
+cd libsodium
+git checkout tags/1.0.3
+./autogen.sh
 ./configure --prefix=/usr
-make -j4 && make install
-cd .. && rm -rf libsodium*
+make check
+sudo make install
 cd ~
 git clone https://github.com/LittleVulpix/toxme
 cd toxme
