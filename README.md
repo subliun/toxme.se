@@ -1,4 +1,4 @@
-##You can contact the maintainer of the toxme.io directly.
+## You can contact the maintainer of the toxme.io directly.
 
 I can be found on freenode IRC, channel #tox , or you can add me from tox by adding toxmeio@toxme.io .
 
@@ -8,15 +8,15 @@ However, please note that you need to be able to prove the account in question i
 
 I am not a tech support for tox issues. If you have an issue with tox, raise a ticket on github or ask someone on the IRC.
 
-#ToxMe source
+# ToxMe source
 
 ToxMe is a speedy and feature-packed Tox name resolution server.
 
-##Installing:
+## Installing:
 
 Quick notes before we get started, ToxMe's source is not required to access and use it in a client. Additionally, it's being written in OS X and ran on Ubuntu, so please correct any odd quirks I might accidentally include.
 
-###OS X
+### OS X
 Install homebrew from http://brew.sh
 
 ```bash
@@ -27,7 +27,7 @@ pip install -r misc/requirements.txt
 
 And you should be ready!
 
-###Ubuntu
+### Ubuntu
 Note: we use Ubuntu 14.04, but newer releases should work too.
 
 ```bash
@@ -47,17 +47,17 @@ pip3 install -r misc/requirements.txt
 
 ### Optional:
 #### postgres support:
-#####OS X
+##### OS X
 ```brew install postgresql```
 
-#####Ubuntu
+##### Ubuntu
 ```apt-get install libpq-dev```
 
-#####All ( For Ubuntu, use pip3 instead of pip )
+##### All ( For Ubuntu, use pip3 instead of pip )
 ```pip install psycopg2```
 
 
-##Getting started:
+## Getting started:
 
 For most testing and development work you'll need both a config.json and a sqlite3 database.
 
@@ -67,11 +67,11 @@ A database can be generated locally by running ```sqlite3 -init misc/structure.s
 
 Now just run python3 src/main.py and it should start automatically!
 
-##Tips:
+## Tips:
 
 If you're testing it locally make sure secure_mode in config.json is marked off (0) otherwise you'll be required to reverse proxy it and use an SSL cert
 
-##Documentation:
+## Documentation:
 - [API reference](/doc/api.md)
 - [config options](/doc/config.md)
 - [PyToxMe](https://github.com/ToxMe/PyToxMe)
