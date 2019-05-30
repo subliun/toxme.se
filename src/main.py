@@ -719,7 +719,7 @@ class EditKeyWeb(APIHandler):
             return
         elif action == "Delete":
             self.settings["local_store"].delete_pk(rec.public_key)
-            self.redirect("/friends/0")
+            self.redirect("/")
             return
 
         bio = self.get_body_argument("bio", "") or rec.bio
@@ -747,7 +747,7 @@ class EditKeyWeb(APIHandler):
             return
 
         if self.update_db_entry(rec.public_key, name, pkey, bio, check, privacy, pin):
-            self.redirect("/friends/0")
+            self.redirect("/")
         return
 
 class AddKeyWeb(APIHandler):
