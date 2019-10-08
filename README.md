@@ -1,12 +1,23 @@
-## You can contact the maintainer of the toxme.io directly.
+## I no longer run this service.
 
-I can be found on freenode IRC, channel #tox , or you can add me from tox by adding toxmeio@toxme.io .
+https://blog.fefe.de/?ts=a3695410 and this is why we can't have nice things.
 
-I can assist you with removing or changing your user account on toxme.io in the event that you forget your toxme.io-generated password.
+Due to recent uninformed and stupid decisions by people who should uphold and protect the law and order, and because I have no need of such drama in my life, I'm no longer maintaining this service.
 
-However, please note that you need to be able to prove the account in question is yours. This means that you need to have access to your old toxid.
+You can find me on toktok IRC if you are interested in having the torch passed to you, but I'll only accept trustworthy individuals I've known to be active in the community/dev team.
 
-I am not a tech support for tox issues. If you have an issue with tox, raise a ticket on github or ask someone on the IRC.
+So long.
+
+
+~~## You can contact the maintainer of the toxme.io directly.~~
+
+~~I can be found on freenode IRC, channel #tox , or you can add me from tox by adding toxmeio@toxme.io .~~
+
+~~I can assist you with removing or changing your user account on toxme.io in the event that you forget your toxme.io-generated password.~~
+
+~~However, please note that you need to be able to prove the account in question is yours. This means that you need to have access to your old toxid.~~
+
+~~I am not a tech support for tox issues. If you have an issue with tox, raise a ticket on github or ask someone on the IRC.~~
 
 # ToxMe source
 
@@ -75,3 +86,5 @@ If you're testing it locally make sure secure_mode in config.json is marked off 
 - [API reference](/doc/api.md)
 - [config options](/doc/config.md)
 - [PyToxMe](https://github.com/ToxMe/PyToxMe)
+
+~~
