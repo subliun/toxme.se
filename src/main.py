@@ -719,7 +719,7 @@ class EditKeyWeb(APIHandler):
             return
         elif action == "Delete":
             self.settings["local_store"].delete_pk(rec.public_key)
-            self.redirect("/friends/0")
+            self.redirect("/")
             return
 
         bio = self.get_body_argument("bio", "") or rec.bio
@@ -747,7 +747,7 @@ class EditKeyWeb(APIHandler):
             return
 
         if self.update_db_entry(rec.public_key, name, pkey, bio, check, privacy, pin):
-            self.redirect("/friends/0")
+            self.redirect("/")
         return
 
 class AddKeyWeb(APIHandler):
@@ -859,17 +859,19 @@ def main():
     LOGGER.info("Record sign key: {0}".format(crypto_core.verify_key))
 
     templates_dir = "../templates/" + cfg["templates"]
+    robots_path=os.path.join(os.path.dirname(__file__), "../static")
     handlers = [
         ("/api", _make_handler_for_api_method),
         ("/pk", PublicKey),
         (r"/barcode/(.+)\.svg$", CreateQR),
         (r"/u/(.+)?$", LookupAndOpenUser),
-        (r"^/$", LookupAndOpenUser)
+        (r"^/$", LookupAndOpenUser),
+        (r"/add_ui", AddKeyWeb),
+        (r"/edit_ui", EditKeyWeb),
+        (r'/robots.txt', tornado.web.StaticFileHandler, {'path': robots_path})
     ]
     if cfg["findfriends_enabled"]:
         handlers.append((r"/friends/([0-9]+)$", FindFriends))
-        handlers.append((r"/add_ui", AddKeyWeb))
-        handlers.append((r"/edit_ui", EditKeyWeb))
     app = tornado.web.Application(
         handlers,
         template_path=os.path.join(os.path.dirname(__file__), templates_dir),

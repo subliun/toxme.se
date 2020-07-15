@@ -250,6 +250,8 @@ class Database(object):
 
     def delete_pk(self, pk):
         sess = self.gs()
+        ex = sess.query(User).filter_by(public_key=pk).first()
+        self.presence_cache[ex.name] = -1
         sess.query(User).filter_by(public_key=pk).delete()
         sess.commit()
         sess.close()

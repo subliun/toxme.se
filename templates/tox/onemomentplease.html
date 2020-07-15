@@ -19,18 +19,18 @@
                 <a href="tox:{{ record.public_key }}{{ record.pin }}{{ record.checksum }}">Click here to add {{record.name}}.</a>
                 <br><br>You can also add <b>{{ record.name }}@{{ realm }}</b> in your client.
             </p>
-            {% if record.bio %}
             <div class="user_entry">
+            {% if record.bio %}
                 <p class="quote">{{ record.bio }}</p>
                 <p class="quote_tail"></p>
                 <span class="username">
                     <b>{{ record.name }}</b><span class="de-emphasize">@{{ realm }}</span>
                 </span>
+            {% end %}
                 {% if record.pin %}
                 <p class="public_id"><b>Full Tox ID</b>: {{ record.public_key }}{{ record.pin }}{{ record.checksum }}</p>
                 {% end %}
             </div>
-            {% end %}
         </div>
         <div class="chunk barcode">
             <img src="/barcode/{{ url_escape(record.name) }}.svg">
@@ -42,8 +42,9 @@
         <div id="footer" class="footer">
             <p>
                 
-                <small class="de-emphasize">Copyright &copy; 2015 Tox Project. All rights reserved.</small>
-                <small class="de-emphasize"><a href="https://github.com/subliun/toxme">I'm open source!</a></small>            </p>
+                <small class="de-emphasize">Copyright &copy; 2019 Tox Project. All rights reserved.</small>
+                <small class="de-emphasize"><a href="https://github.com/LittleVulpix/toxme">I'm open source!</a></small>
+            </p>
         </div>
     </article>
 </body>
